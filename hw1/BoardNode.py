@@ -11,7 +11,10 @@ class BoardNode:
     def __init__(self, x, y, p, grid):
         self.x = x
         self.y = y
-        self.isBlocked = getIsBlocked(p)
+        self.isPath = False
+        self.distance = 0
+        #print(self.getIsBlocked(p))
+        self.isBlocked = self.getIsBlocked(p)
         self.isDiscovered = False
         self.next = None
 

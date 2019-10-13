@@ -2,7 +2,7 @@ from BoardNode import BoardNode
 
 class Board:
 	def __init__(self, length, width, p):
-		self.grid = [[BoardNode(99,99,p,None) for i in range(length)] for j in range(width)]
+		self.grid = [[BoardNode(0,0,p,None) for i in range(length)] for j in range(width)]
 		self.length = length
 		self.width = width
 	

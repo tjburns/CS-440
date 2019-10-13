@@ -1,7 +1,10 @@
+import sys
 from random import shuffle, randrange
 
+sys.setrecursionlimit(10000)
 
-def make_maze(w=16, h=8):
+
+def make_maze(w, h):
     vis = [[0] * w + [1] for _ in range(h)] + [[1] * (w + 1)]
     ver = [["|  "] * w + ['|'] for _ in range(h)] + [[]]
     hor = [["+--"] * w + ['+'] for _ in range(h + 1)]
@@ -26,4 +29,4 @@ def make_maze(w=16, h=8):
 
 
 if __name__ == '__main__':
-    print(make_maze())
+    print(make_maze(101, 101))

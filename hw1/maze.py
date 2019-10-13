@@ -1,3 +1,4 @@
+
 # -*- coding: utf-8 -*-
 import random
 
@@ -13,6 +14,17 @@ class Cell(object):
         self.x = x
         self.y = y
         self.walls = set(walls)
+
+import sys
+from random import shuffle, randrange
+
+sys.setrecursionlimit(10000)
+
+
+def make_maze(w, h):
+    vis = [[0] * w + [1] for _ in range(h)] + [[1] * (w + 1)]
+    ver = [["|  "] * w + ['|'] for _ in range(h)] + [[]]
+    hor = [["+--"] * w + ['+'] for _ in range(h + 1)]
 
     def __repr__(self):
         # <15, 25 (es  )>

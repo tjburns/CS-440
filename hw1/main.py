@@ -52,17 +52,17 @@ board_gui(test_maze.board)
 while True:
 
     # Forward A* - Lower G
-    path = forward_a_star(test_agent, test_goal, test_maze, 'low')
+    #path = forward_a_star(test_agent, test_goal, test_maze, 'low')
     # Backward A* - Lower G
-    path = backward_a_star(test_agent, test_goal, test_maze, 'low')
+    #path = backward_a_star(test_agent, test_goal, test_maze, 'low')
 
     # Forward A* - Higher G
     path = forward_a_star(test_agent, test_goal, test_maze, 'high')
     # Backward A* - Higher G
-    path = backward_a_star(test_agent, test_goal, test_maze, 'high')
+    #path = backward_a_star(test_agent, test_goal, test_maze, 'high')
 
     # Adaptive A* - High G
-    path = adaptive_a_star(test_agent, test_goal, test_maze, 0)
+    #path = adaptive_a_star(test_agent, test_goal, test_maze, 0)
 
     if path == None:
         break
@@ -83,7 +83,7 @@ while True:
     # FORWARD AGENT TRAVERSAL
     test_agent = agent_traverse(test_goal, path, test_maze, 'forward')
     # BACKWARD AGENT TRAVERSAL
-    test_agent = agent_traverse(test_goal, path, test_maze, 'backward')
+    #test_agent = agent_traverse(test_goal, path, test_maze, 'backward')
 
     test_maze.board[test_agent.x][test_agent.y][0] = 4
 
@@ -93,6 +93,7 @@ while True:
         test_maze.board[coord.x][coord.y][0] = 5
 
     # PRINT INTERMEDIATE PATH TRAVERSAL
+    board_gui(test_maze.board)
 
     test_agent.p_node = None
     test_goal.p_node = None

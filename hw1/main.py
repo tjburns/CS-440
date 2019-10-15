@@ -52,14 +52,14 @@ new_g = 0
 while True:
 
     # Forward A* - Lower G
-    #path = forward_a_star(test_agent, test_goal, test_maze, 'low')
+    path = forward_a_star(test_agent, test_goal, test_maze, 'low')
     # Backward A* - Lower G
     #path = backward_a_star(test_agent, test_goal, test_maze, 'low')
 
     # Forward A* - Higher G
-    path = forward_a_star(test_agent, test_goal, test_maze, 'high')
+    #path = forward_a_star(test_agent, test_goal, test_maze, 'high')
     # Backward A* - Higher G
-    # path = backward_a_star(test_agent, test_goal, test_maze, 'high')
+    #path = backward_a_star(test_agent, test_goal, test_maze, 'high')
 
     """
     # Adaptive A* - High G (uses forward A* but updates heuristics each path finding run)
@@ -87,7 +87,7 @@ while True:
     path_board.board[test_agent.x][test_agent.y][0] = 4
 
     # PRINT INTERMEDIATE PATH CALCULATIONS
-    board_gui(path_board.board)
+#board_gui(path_board.board)
 
     test_maze.board[test_agent.x][test_agent.y][0] = 4
     xval = test_agent.x

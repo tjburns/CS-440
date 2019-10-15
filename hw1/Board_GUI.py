@@ -13,8 +13,8 @@ MAGENTA = (255, 0, 255)
 CYAN = (0, 255, 255)
 
 # This sets the WIDTH and HEIGHT of each grid location
-WIDTH = 6
-HEIGHT = 6
+WIDTH = 8
+HEIGHT = 8
 
 # This sets the margin between each cell
 MARGIN = 1
@@ -25,9 +25,9 @@ def board_gui(board):
     pygame.init()
 
     # Set the HEIGHT and WIDTH of the screen
-    row = len(board)
-    col = len(board[0])
-    WINDOW_SIZE = [(WIDTH+MARGIN)*row+1, (HEIGHT+MARGIN)*col+1]
+    rowT = len(board)
+    columnT = len(board[0])
+    WINDOW_SIZE = [(WIDTH+MARGIN)*rowT+1, (HEIGHT+MARGIN)*columnT+1]
     screen = pygame.display.set_mode(WINDOW_SIZE)
     
     # Set title of screen
@@ -47,21 +47,28 @@ def board_gui(board):
         # Set the screen background
         screen.fill(BLACK)
 
-        for row in range(row):
-            for col in range(col):
+        for row in range(rowT):
+            for col in range(columnT):
                 color = WHITE
-                if grid[row][column][0] == 1: # blocked - unseen
+                if board[row][col][0] == 1: # blocked - unseen
                     color = BLACK
-                if grid[row][column][0] == 2: # blocked - seen
-                    color = BLUE
-                if grid[row][column][0] == 3: # target
-                    color = GREEN
-                if grid[row][column][0] == 4: # agent
-                    color = RED
-                if grid[row][column][0] == 5: # path
+                if board[row][col][0] == 2: # blocked - seen
                     color = MAGENTA
-                if grid[row][column][0] == 6: # adaptive path
+                if board[row][col][0] == 3: # target
+                    color = GREEN
+                if board[row][col][0] == 4: # agent
+                    color = BLUE
+                if board[row][col][0] == 5: # path
+                    color = RED
+                if board[row][col][0] == 6: # adaptive path
                     color = YELLOW
+                pygame.draw.rect(screen,
+                                 color,
+                                 [(MARGIN + WIDTH) * col + MARGIN,
+                                  (MARGIN + HEIGHT) * row + MARGIN,
+                                  WIDTH,
+                                  HEIGHT])
+
 
         # Limit to 60 frames per second
         clock.tick(60)

@@ -114,7 +114,7 @@ def backward_a_star(agent_pos, goal_pos, board, g_comparison):
     return None
 
 def adaptive_a_star(agent_pos, goal_pos, board, new_g):
-    openList = MinHighGHeap
+    openList = MinHighGHeap()
     closedList = []
     curr = agent_pos
     board.board[curr.x][curr.y][1] = board.getAdaptiveHeuristic(new_g, curr.g)
@@ -134,7 +134,7 @@ def adaptive_a_star(agent_pos, goal_pos, board, new_g):
                 curr = curr.p_node
             return path[::-1]
 
-        for n in maze.getNeighbors(curr):
+        for n in board.getNeighbors(curr):
             if n in closedList:
                 continue
             if n in openList.heap:
@@ -154,14 +154,14 @@ def adaptive_a_star(agent_pos, goal_pos, board, new_g):
                 openList.insert(n)
     
     print("No path.")
-    retirm None
+    return None
 
 # moves the agent along the found path either forwards or backwards
 # finds blocked neighbors along path traversal
 def agent_traverse(goal_pos, path, board, direction):
     prev = None
     for curr in path:
-        if curr == goal:
+        if curr == goal_pos:
             print("Path completed.")
             return goal_pos
         # should be 1 or 2 if blocked ((and) seen)
@@ -169,14 +169,14 @@ def agent_traverse(goal_pos, path, board, direction):
             print("Path blocked. Restarting A* from parent.")
             # set as blocked and seen
             board.board[curr.x][curr.y][0] = 2
-            if direction = 'backward':
+            if direction == 'backward':
                 return prev
             return curr.p_node
         
         # check for blocked neighbors
         for n in board.getNeighbors(curr):
             if board.board[n.x][n.y][0] == 1:
-                board.board[n.x, n.y][0] = 2
+                board.board[n.x][n.y][0] = 2
             
         prev = curr
 

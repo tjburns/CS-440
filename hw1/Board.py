@@ -9,11 +9,13 @@ class Board:
 		self.board = []
 		for i in range(self.width):
 			self.board.append([])
-			if prob >= random.random():
-				self.board[i][j].append(1)
-			else:
-				self.board[i][j].append(0)
-			self.board[i][j].append(-1)
+			for j in range(self.height):
+				self.board[i].append([])
+				if prob >= random.random():
+					self.board[i][j].append(1)
+				else:
+					self.board[i][j].append(0)
+				self.board[i][j].append(-1)
 
 	def getCoord(self, x, y):
 		if 0 <= x <= self.width and 0 <= y <= self.height:
@@ -38,10 +40,10 @@ class Board:
 		return new_g - g
 	
 	def resetHeuristicVals(self):
-        for row in range(self.width):
-            for col in range(self.height):
-                self.board[row][col][1] = -1
-	
+		for row in range(self.width):
+			for col in range(self.height):
+				self.board[row][col][1] = -1
+
 # Defines a coordinate for each point on the board.
 # Each point contains all information necessary for path traversal algorithms
 class Coordinate:
@@ -53,24 +55,24 @@ class Coordinate:
 		self.p_node = None
 	
 	# used for comparisons in the MinHighGHeap to maintain order
-    def __lt__(self, other):
-        if type(self) == type(other):
-            if self.f < other.f:
-                return True
-            elif self.f == other.f:
-                return self.g >= other.g
-            return False
+	def __lt__(self, other):
+		if type(self) == type(other):
+			if self.f < other.f:
+				return True
+			elif self.f == other.f:
+				return self.g >= other.g
+			return False
 
-    # used for comparisons in the MinLowGHeap to maintain order
-    def __gt__(self, other):
-        if type(self) == type(other):
-            if self.f < other.f:
-                return True
-            elif self.f == other.f:
-                return self.g < other.g
-            return False
+	# used for comparisons in the MinLowGHeap to maintain order
+	def __gt__(self, other):
+		if type(self) == type(other):
+			if self.f < other.f:
+				return True
+			elif self.f == other.f:
+				return self.g < other.g
+			return False
 
 	# used for comparisons in both heaps
-    def __eq__(self, other):
-        if type(self) == type(other):
-            return self.x == other.x and self.y == other.y
+	def __eq__(self, other):
+		if type(self) == type(other):
+			return self.x == other.x and self.y == other.y

@@ -15,8 +15,6 @@ Value on Board : State of Coordinate : Color
 6 : # adaptive path      : YELLOW
 """
 
-startTime = time.time()
-
 test_maze = Board(101, 101, 0.3)
 row = len(test_maze.board)
 col = len(test_maze.board[0])
@@ -37,7 +35,7 @@ test_maze.board[test_agent.x][test_agent.y][0] = 4
 # place goal in the first unblocked position in the bottom-rightmost coordinate on the board
 found = 0
 for i in range(row-1, -1, -1):
-    for j in range(col-1, -1. -1):
+    for j in range(col-1, -1, -1):
         if test_maze.board[i][j][0] == 0:
             test_goal = Coordinate(i, j)
             found = 1
@@ -45,10 +43,12 @@ for i in range(row-1, -1, -1):
     if found == 1:
         break
 
-test_maze[test_goal.x][test_goal.y][0] = 3
+test_maze.board[test_goal.x][test_goal.y][0] = 3
 
 board_gui(test_maze.board)
 
+startTime = time.time()
+new_g = 0
 while True:
 
     # Forward A* - Lower G
@@ -59,19 +59,32 @@ while True:
     # Forward A* - Higher G
     path = forward_a_star(test_agent, test_goal, test_maze, 'high')
     # Backward A* - Higher G
-    #path = backward_a_star(test_agent, test_goal, test_maze, 'high')
+    # path = backward_a_star(test_agent, test_goal, test_maze, 'high')
 
-    # Adaptive A* - High G
-    #path = adaptive_a_star(test_agent, test_goal, test_maze, 0)
+    """
+    # Adaptive A* - High G (uses forward A* but updates heuristics each path finding run)
+    path = forward_a_star(test_agent, test_goal, test_maze, 'high')
+    # INCLUDE THE FOLLOWING 3 LINES WITH ADAPTIVE A* RUNS
+    new_g = len(path)
+    for coord in path:
+        test_maze.board[coord.x][coord.y][1] = new_g
+        new_g = new_g-1
+    """
 
     if path == None:
         break
 
     path_board = Board(101,101,0)
-    path_board.board[test_agent.x][test_agent.y][0] = 4
     for coord in path:
         path_board.board[coord.x][coord.y][0] = 6
     path_board.board[test_goal.x][test_goal.y][0] = 3
+    for i in range(row):
+        for j in range(col):
+            if test_maze.board[i][j][0] == 1:
+                path_board.board[i][j][0] = 1
+            elif test_maze.board[i][j][0] == 2:
+                path_board.board[i][j][0] = 2
+    path_board.board[test_agent.x][test_agent.y][0] = 4
 
     # PRINT INTERMEDIATE PATH CALCULATIONS
     board_gui(path_board.board)
@@ -93,15 +106,19 @@ while True:
         test_maze.board[coord.x][coord.y][0] = 5
 
     # PRINT INTERMEDIATE PATH TRAVERSAL
-    board_gui(test_maze.board)
+#board_gui(test_maze.board)
 
+    # reset path
     test_agent.p_node = None
+    # reset path for backward A*
     test_goal.p_node = None
     if test_agent == test_goal:
         break
-    
-board_gui(board.grid)
 
+# time taken to display the board gui will also be measured in this
+# multiple independent measures should be taken and added to the totalTime variable for an accurate measure
 endTime = time.time()
 totalTime = endTime - startTime
 print("Total Runtime: " + str(totalTime))
+
+board_gui(test_maze.board)

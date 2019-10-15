@@ -1,3 +1,5 @@
+from Board import Coordinate
+
 # min heap for repeated forward A* when choosing lower g values on tie breaks of equal f values
 class MinLowGHeap:
 	def __init__(self):
@@ -22,7 +24,7 @@ class MinLowGHeap:
 	
 	def climbDown(self, i):
 		while i*2 <= self.heapsize:
-			child = self.minchild(i)
+			child = self.minChild(i)
 			if self.heap[child] > self.heap[i]:
 				temp = self.heap[i]
 				self.heap[i] = self.heap[child]

@@ -22,6 +22,9 @@ class NaiveBayesClassifier(classificationMethod.ClassificationMethod):
     self.type = "naivebayes"
     self.k = 1 # this is the smoothing parameter, ** use it in your train method **
     self.automaticTuning = False # Look at this flag to decide whether to choose k automatically ** use this in your train method **
+    # new defs
+    self.labelProbabilities = None
+    self.conditionalProbabilities = None
     
   def setSmoothing(self, k):
     """
@@ -61,8 +64,59 @@ class NaiveBayesClassifier(classificationMethod.ClassificationMethod):
     """
 
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    labelSize = len(trainingLabels)
+    # count labels to find the count of Y --- make count objects from util.py
+    labelCounter = util.Counter()
+    conditionalCounter = util.Counter()
+
+    for i in range(labelSize):
+      label = trainingLabels[i]
+      labelCounter[label] = labelCounter[label]+1
+
+      # count the number of times a feature is true and specific label is used
+      # values must be recorded for conditional probability calculations
+      # the key for the counter should be a feature and its associated label so that we can represent the AND condition between them
+      for feature in self.features:
+        if trainingData[i][feature] == 1: # colored pixel
+          conditionalCounter[(feature, label)] = conditionalCounter[(feature, label)]+1
+
+    finalLabelProbabilities = labelCounter.copy()
+    for label in self.legalLabels:
+      for feature in self.features:
+        finalLabelProbabilities[(feature, label)] = finalLabelProbabilities[(feature,label)] / labelSize
+    self.labelProbabilities = finalLabelProbabilities
+
+    probabilities = []
+    accuracy = []
+    validationSize = len(validationLabels)
+
+    for k in kgrid:
+      # divide conditionalCounter for each feature by the number of times each label appeared using labelCounter
+      #   |
+      #   --> = P (F | Y)
         
+      tempCondCounter = util.Counter()
+      for feature in self.features:
+        for label in self.legalLabels:
+          tempCondCounter[(feature, label)] = (conditionalCounter[(feature, label)]+k) / (labelCounter[label] + 2*k)
+
+      self.conditionalProbabilities = tempCondCounter
+      probabilities.append(tempCondCounter)
+
+      # check if guess is correct
+      guesses = self.classify(validationData)
+      numCorrect = 0
+      for label in range(validationSize):
+        validationLabel = validationLabels[label]
+        if validationLabel == guesses[label]:
+          numCorrect = numCorrect + 1
+        
+      accuracy.append(numCorrect)
+      
+    index = accuracy.index(max(accuracy))
+    self.conditionalProbabilities = probabilities[index]
+
+
   def classify(self, testData):
     """
     Classify the data based on the posterior distribution over labels.
@@ -89,7 +143,20 @@ class NaiveBayesClassifier(classificationMethod.ClassificationMethod):
     logJoint = util.Counter()
     
     "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    for label in self.legalLabels:
+      sum = 0
+      for feature in self.features:
+        #print(self.conditionalProbabilities[(feature, label)])
+        if datum[feature] == 1:
+          # can't find log of 0 --- behavior is undefined
+          if self.conditionalProbabilities[(feature, label)] == 0:
+            sum = sum + 0
+          else:
+            sum = sum + math.log(self.conditionalProbabilities[(feature, label)])
+        else:
+          sum = sum + math.log(1 - self.conditionalProbabilities[(feature, label)])
+        
+      logJoint[label] = math.log(self.labelProbabilities[label]) + sum
     
     return logJoint
   
@@ -103,10 +170,7 @@ class NaiveBayesClassifier(classificationMethod.ClassificationMethod):
     featuresOdds = []
        
     "*** YOUR CODE HERE ***"
+    # not used anyway??
     util.raiseNotDefined()
 
     return featuresOdds
-    
-
-    
-      

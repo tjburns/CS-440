@@ -53,12 +53,15 @@ class PerceptronClassifier:
         maxScore, maxY = 0, 0
         scoresList = []
 
+        # find scores for the current label based on the currently calculated weights
         for yVal in self.legalLabels:
           scoresList.append(trainingData[i] * self.weights[yVal])
         
+        # find highest score for the current label
         maxScore = max(scoresList)
         maxY = self.legalLabels[scoresList.index(maxScore)]
         
+        # update the weights if guessed label is incorrect
         if maxY != trainingLabels[i]:
           self.weights[trainingLabels[i]] = self.weights[trainingLabels[i]] + trainingData[i]
           self.weights[maxY] = self.weights[maxY] - trainingData[i]

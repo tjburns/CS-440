@@ -12,9 +12,11 @@
 import mostFrequent
 import naiveBayes
 import perceptron
+import knearest
 import samples
 import sys
 import util
+import time
 
 TEST_SET_SIZE = 100
 DIGIT_DATUM_WIDTH=28
@@ -164,10 +166,11 @@ def readCommand( argv ):
   from optparse import OptionParser  
   parser = OptionParser(USAGE_STRING)
   
-  parser.add_option('-c', '--classifier', help=default('The type of classifier'), choices=['mostFrequent', 'nb', 'naiveBayes', 'perceptron', 'mira', 'minicontest'], default='mostFrequent')
+  parser.add_option('-c', '--classifier', help=default('The type of classifier'), choices=['mostFrequent', 'nb', 'naiveBayes', 'perceptron', 'mira', 'minicontest', 'knearest'], default='mostFrequent')
   parser.add_option('-d', '--data', help=default('Dataset to use'), choices=['digits', 'faces'], default='digits')
   parser.add_option('-t', '--training', help=default('The size of the training set'), default=100, type="int")
   parser.add_option('-f', '--features', help=default('Whether to use enhanced features'), default=False, action="store_true")
+  parser.add_option('-n', '--neighbors', help=default('k value for the knearest neighbors classifier'), default=5, type="int")
   parser.add_option('-o', '--odds', help=default('Whether to compute odds ratios'), default=False, action="store_true")
   parser.add_option('-1', '--label1', help=default("First label in an odds ratio comparison"), default=0, type="int")
   parser.add_option('-2', '--label2', help=default("Second label in an odds ratio comparison"), default=1, type="int")
@@ -253,6 +256,8 @@ def readCommand( argv ):
   elif(options.classifier == 'minicontest'):
     import minicontest
     classifier = minicontest.contestClassifier(legalLabels)
+  elif(options.classifier == "knearest"):
+    classifier = knearest.kNearestClassifier(legalLabels, options.neighbors)
   else:
     print "Unknown classifier:", options.classifier
     print USAGE_STRING
@@ -313,19 +318,32 @@ def runClassifier(args, options):
   validationData = map(featureFunction, rawValidationData)
   testData = map(featureFunction, rawTestData)
   
+  start = time.time()
+
   # Conduct training and testing
-  print "Training..."
-  classifier.train(trainingData, trainingLabels, validationData, validationLabels)
-  print "Validating..."
-  guesses = classifier.classify(validationData)
-  correct = [guesses[i] == validationLabels[i] for i in range(len(validationLabels))].count(True)
-  print str(correct), ("correct out of " + str(len(validationLabels)) + " (%.1f%%).") % (100.0 * correct / len(validationLabels))
-  print "Testing..."
-  guesses = classifier.classify(testData)
-  correct = [guesses[i] == testLabels[i] for i in range(len(testLabels))].count(True)
-  print str(correct), ("correct out of " + str(len(testLabels)) + " (%.1f%%).") % (100.0 * correct / len(testLabels))
-  analysis(classifier, guesses, testLabels, testData, rawTestData, printImage)
+  if options.classifier == "knearest":
+    print "Knearest requires no training."
+    print "Testing..."
+    guesses = classifier.classify(testData, trainingData, trainingLabels)
+    correct = [guesses[i] == testLabels[i] for i in range(len(testLabels))].count(True)
+    print(str(correct), ("correct out of " + str(len(testLabels)) + " (%.1f%%).") % (100 * correct / len(testLabels)))
+  else:
+    print "Training..."
+    classifier.train(trainingData, trainingLabels, validationData, validationLabels)
+    print "Validating..."
+    guesses = classifier.classify(validationData)
+    correct = [guesses[i] == validationLabels[i] for i in range(len(validationLabels))].count(True)
+    print str(correct), ("correct out of " + str(len(validationLabels)) + " (%.1f%%).") % (100.0 * correct / len(validationLabels))
+    print "Testing..."
+    guesses = classifier.classify(testData)
+    correct = [guesses[i] == testLabels[i] for i in range(len(testLabels))].count(True)
+    print str(correct), ("correct out of " + str(len(testLabels)) + " (%.1f%%).") % (100.0 * correct / len(testLabels))
+    analysis(classifier, guesses, testLabels, testData, rawTestData, printImage)
   
+  end = time.time()
+  runTime = end - start 
+  print "Total Runtime: " + str(runTime) + " seconds."
+
   # do odds ratio computation if specified at command line
   if((options.odds) & (options.classifier == "naiveBayes" or (options.classifier == "nb")) ):
     label1, label2 = options.label1, options.label2

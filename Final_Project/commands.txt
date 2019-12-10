@@ -8,3 +8,41 @@ python dataClassifier.py -c mira --autotune
 python dataClassifier.py -d digits -c naiveBayes -f -a -t 1000  
 python dataClassifier.py -d digits -c minicontest
 python runMinicontest.py
+
+python dataClassifier.py -h
+Usage: 
+  USAGE:      python dataClassifier.py <options>
+  EXAMPLES:   (1) python dataClassifier.py
+                  - trains the default mostFrequent classifier on the digit dataset
+                  using the default 100 training examples and
+                  then test the classifier on test data
+              (2) python dataClassifier.py -c naiveBayes -d digits -t 1000 -f -o -1 3 -2 6 -k 2.5
+                  - would run the naive Bayes classifier on 1000 training examples
+                  using the enhancedFeatureExtractorDigits function to get the features
+                  on the faces dataset, would use the smoothing parameter equals to 2.5, would
+                  test the classifier on the test data and performs an odd ratio analysis
+                  with label1=3 vs. label2=6
+                 
+
+Options:
+  -h, --help            show this help message and exit
+  -c CLASSIFIER, --classifier=CLASSIFIER
+                        The type of classifier [Default: mostFrequent]
+  -d DATA, --data=DATA  Dataset to use [Default: digits]
+  -t TRAINING, --training=TRAINING
+                        The size of the training set [Default: 100]
+  -f, --features        Whether to use enhanced features [Default: False]
+  -o, --odds            Whether to compute odds ratios [Default: False]
+  -1 LABEL1, --label1=LABEL1
+                        First label in an odds ratio comparison [Default: 0]
+  -2 LABEL2, --label2=LABEL2
+                        Second label in an odds ratio comparison [Default: 1]
+  -w, --weights         Whether to print weights [Default: False]
+  -k SMOOTHING, --smoothing=SMOOTHING
+                        Smoothing parameter (ignored when using --autotune)
+                        [Default: 2.0]
+  -a, --autotune        Whether to automatically tune hyperparameters
+                        [Default: False]
+  -i ITERATIONS, --iterations=ITERATIONS
+                        Maximum iterations to run training [Default: 3]
+  -s TEST, --test=TEST  Amount of test data to use [Default: 100]

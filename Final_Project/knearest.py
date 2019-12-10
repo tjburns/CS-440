@@ -35,8 +35,8 @@ class kNearestClassifier:
             sortedDistances = sorted(distances)
             ksorted = sortedDistances[0:self.neighbors]
             closestLabels = []
-            for val in ksorted:
-                closestLabels.append(trainingLabels[distances.index(val)])
+            for dist in ksorted:
+                closestLabels.append(trainingLabels[distances.index(dist)])
             label = max(set(closestLabels), key=closestLabels.count)
             # empty if k=0, implement something to catch that and either random guess or default guess
 

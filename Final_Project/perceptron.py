@@ -21,6 +21,7 @@ class PerceptronClassifier:
     self.legalLabels = legalLabels
     self.type = "perceptron"
     self.max_iterations = max_iterations
+    # dictionary defintion for weights
     self.weights = {}
     for label in legalLabels:
       self.weights[label] = util.Counter() # this is the data-structure you should use
@@ -48,17 +49,19 @@ class PerceptronClassifier:
     for iteration in range(self.max_iterations):
       print "Starting iteration ", iteration, "..."
       for i in range(len(trainingData)):
-          "*** YOUR CODE HERE ***"
-          maxScore, maxY = 0, 0
-          scoresList = []
+        "*** YOUR CODE HERE ***"
+        maxScore, maxY = 0, 0
+        scoresList = []
 
-          for yVal in self.legalLabels:
-            scoresList.append(trainingData[i] * self.weights[yVal])
-            maxScore = max(scoresList)
-            maxY = self.legalLabels[scoresList.index(maxScore)]
-            if maxY != trainingLabels[i]:
-              self.weights[trainingLabels[i]] = self.weights[trainingLabels[i]] + trainingData[i]
-              self.weights[maxY] = self.weights[maxY] - trainingData[i]
+        for yVal in self.legalLabels:
+          scoresList.append(trainingData[i] * self.weights[yVal])
+        
+        maxScore = max(scoresList)
+        maxY = self.legalLabels[scoresList.index(maxScore)]
+        
+        if maxY != trainingLabels[i]:
+          self.weights[trainingLabels[i]] = self.weights[trainingLabels[i]] + trainingData[i]
+          self.weights[maxY] = self.weights[maxY] - trainingData[i]
 
   def classify(self, data ):
     """
@@ -74,8 +77,7 @@ class PerceptronClassifier:
         vectors[l] = self.weights[l] * datum
       guesses.append(vectors.argMax())
     return guesses
-
-  
+    
   def findHighWeightFeatures(self, label):
     """
     Returns a list of the 100 features with the greatest weight for some label

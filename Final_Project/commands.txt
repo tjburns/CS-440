@@ -24,6 +24,12 @@ Usage:
                   with label1=3 vs. label2=6
                  
 
+Training set size of digits is 5000
+Testing set size of digits is 1000
+
+Training set size of faces is 451
+Testing set size of faces is 150
+
 Options:
   -h, --help            show this help message and exit
   -c CLASSIFIER, --classifier=CLASSIFIER

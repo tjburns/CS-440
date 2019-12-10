@@ -170,7 +170,7 @@ class NaiveBayesClassifier(classificationMethod.ClassificationMethod):
     featuresOdds = []
        
     "*** YOUR CODE HERE ***"
-    # not used anyway??
+    # not used unless the -o flag is used
     util.raiseNotDefined()
 
     return featuresOdds
